@@ -1,25 +1,38 @@
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
+import LoginPage from './components/loginPage/loginPage';
+import Store from './components/reduxStore/Store';
+import { Provider } from 'react-redux';
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { logUserIn } from './components/reduxStore/LoginActions';
+import Dashboard from './components/dashboard/dashboard';
+
+
 
 function App() {
+
+
+  const [isLogged, setIsLogged] = useState(false);
+
+  const handleClick = () => {
+    setIsLogged(true)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+    <Provider store={Store}>
+     {!isLogged ?  <LoginPage handleClick = {handleClick}/> : <Dashboard/>}
+    </Provider>
     </div>
   );
 }
+const mapStateToProps = (state) => {
+  return {
+    isLoggedIn: state.isLoggedIn,
+  };
+};
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators({ logUserIn: logUserIn }, dispatch);
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
